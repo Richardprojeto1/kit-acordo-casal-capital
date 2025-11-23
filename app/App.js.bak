@@ -1,0 +1,33 @@
+// app/_layout.tsx  ← Este é o coração do seu app agora!
+
+import React from "react";
+import { Slot, Redirect } from "expo-router";
+import { AuthProvider, useAuth } from "../src/context/AuthContext";
+import { AgreementsProvider } from "../src/context/AgreementsContext";
+
+// Componente que verifica autenticação
+function RootLayoutNav() {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return null; // ou sua tela de splash
+  }
+
+  // Se não estiver logado → vai pra login
+  if (!user) {
+    return <Redirect href="/login" />;
+  }
+
+  // Se estiver logado → mostra as tabs
+  return <Slot />;
+}
+
+export default function RootLayout() {
+  return (
+    <AuthProvider>
+      <AgreementsProvider>
+        <RootLayoutNav />
+      </AgreementsProvider>
+    </AuthProvider>
+  );
+}
